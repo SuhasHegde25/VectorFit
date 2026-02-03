@@ -1,8 +1,8 @@
-## VectorFit
+# VectorFit
 
 **Adaptive Singular & Bias Vector Fine-Tuning of Pre-trained Foundation Models**
 
-📄 *Paper*: VectorFit (arXiv:2503.19530)
+📄 *Paper*: VectorFit
 🏫 *Affiliation*: IIT Indore
 🧠 *Category*: Parameter-Efficient Fine-Tuning (PEFT)
 🎯 *Domains*: Language, Vision, Multimodal, Image Generation
@@ -11,66 +11,73 @@
 
 ## 🔍 Overview
 
-Parameter-Efficient Fine-Tuning (PEFT) methods such as LoRA, Adapters, and AdaLoRA reduce training cost by introducing *new* low-rank or sparse parameters alongside frozen pre-trained weights. While effective, these methods suffer from a persistent **performance gap** compared to full fine-tuning—especially in **extremely low-budget regimes**.
+Parameter-Efficient Fine-Tuning (PEFT) methods such as **LoRA**, **Adapters**, and **AdaLoRA** reduce training cost by introducing *new* low-rank parameters on top of frozen pre-trained models. While effective, these methods consistently exhibit a **performance gap** compared to full fine-tuning—especially in **extreme low-parameter regimes**.
 
-**VectorFit** takes a fundamentally different approach.
+**VectorFit** proposes a fundamentally different paradigm.
 
-Instead of adding new trainable matrices, VectorFit:
+Instead of learning *new* matrices, VectorFit:
 
-* **Directly adapts the singular vectors and biases of pre-trained weight matrices**
-* Exploits the **structural and transformational knowledge already embedded** in the weights
-* Produces **high-rank incremental updates** comparable to full fine-tuning
+* Directly **adapts existing singular and bias vectors**
+* Exploits **transformational structure already encoded** in pre-trained weights
+* Produces **high-rank functional updates** using < 0.1% trainable parameters
 
-With **≤ 0.1% trainable parameters**, VectorFit consistently matches or surpasses state-of-the-art PEFT methods across **19 datasets** spanning language, vision, and generative tasks.
+Across **19 datasets** spanning language, vision, and image generation, VectorFit matches or outperforms state-of-the-art PEFT methods while remaining highly parameter-efficient.
 
 ---
 
 ## ✨ Key Contributions
 
-* **Singular-Vector-Based Fine-Tuning**
-  Fine-tunes singular values (Σ) and bias vectors instead of learning new weights.
+* **Singular-Vector Fine-Tuning**
+  Fine-tunes singular values and bias vectors instead of introducing new Architecture-level adapters.
 
-* **High-Rank Adaptation Without Full-FT**
-  Achieves full-rank–like updates using a fraction of parameters.
+* **High-Rank Updates Without Full FT**
+  Achieves full-fine-tuning-like behavior with orders of magnitude fewer parameters.
 
 * **Adaptive Vector Freezing (AVF)**
-  A novel mechanism that balances training across singular and bias vectors, preventing co-adaptation.
+  A novel training mechanism that prevents vector co-adaptation and stabilizes optimization.
 
 * **Extreme Parameter Efficiency**
-  Outperforms baselines with up to **9× fewer trainable parameters**.
+  Strong performance with ≤ 0.1% trainable parameters.
 
-* **General-Purpose PEFT**
+* **General-Purpose Applicability**
   Works across:
 
-  * NLU, QA, NLG
+  * NLU / QA / NLG
+  * Mathematical reasoning
   * Image classification
   * Subject-driven image generation (DreamBooth)
 
 ---
 
-## 🧠 Core Idea
+## 🧠 Core Idea (GitHub-Safe Math)
 
-Given a pre-trained weight matrix:
+Given a pre-trained weight matrix decomposed using Singular Value Decomposition (SVD):
 
-[
-W_0 = U \Sigma V^T
-]
+```
+W₀ = U Σ Vᵀ
+```
 
-VectorFit:
+Where:
 
-* Keeps **U** and **V** frozen
-* Trains:
+* `U` and `V` are orthogonal matrices
+* `Σ` contains singular values
 
-  * the **singular vector Σ**
-  * the **bias vector b**
+### VectorFit adapts the model by:
 
-The adapted weight becomes:
+* Keeping `U` and `V` **frozen**
+* Training only:
 
-[
-W = U (\Sigma + \Delta \Sigma) V^T,\quad b = b_0 + \Delta b
-]
+  * Singular value updates `ΔΣ`
+  * Bias updates `Δb`
 
-This allows **high-rank incremental updates** without introducing new parameter matrices.
+The adapted parameters become:
+
+```
+W = U (Σ + ΔΣ) Vᵀ
+b = b₀ + Δb
+```
+
+This enables **global, high-rank transformations** while training a very small number of parameters.
 
 ---
 
@@ -78,76 +85,85 @@ This allows **high-rank incremental updates** without introducing new parameter 
 
 ![VectorFit Architecture](assets/vectorfit_architecture.png)
 
-**Pipeline**:
+### Pipeline
 
-1. Perform SVD on pre-trained weights (once, before fine-tuning)
-2. Replace original weights with decomposed form
+1. Perform SVD on pre-trained weight matrices (one-time)
+2. Replace original weights with decomposed representation
 3. Train only:
 
-   * selected singular vectors
-   * bias vectors
-4. Control training dynamics via **Adaptive Vector Freezing**
+   * Selected singular vectors
+   * Bias vectors
+4. Control learning dynamics using **Adaptive Vector Freezing**
 
-> See Figure 2 (page 3) of the paper for the full architecture diagram .
+📌 See the architecture illustration in the paper (Figure 2).
 
 ---
 
 ## ❄️ Adaptive Vector Freezing (AVF)
 
-Training only a small number of vectors can lead to **co-adaptation**, where a few vectors dominate optimization.
+Training a small set of vectors can lead to **co-adaptation**, where a subset of vectors dominates optimization.
 
-AVF solves this by:
+**Adaptive Vector Freezing (AVF)** addresses this by:
 
-* Measuring **training strength** of each vector
-* Periodically **freezing the most over-trained vectors**
-* Allowing under-trained vectors to catch up
+* Measuring per-vector training strength
+* Identifying over-optimized vectors
+* Temporarily freezing them
+* Allowing under-trained vectors to receive gradients
 
-This yields:
+This results in:
 
-* Dropout-like regularization effects
-* More balanced optimization
-* Better stability than random freezing or L1 regularization
+* Balanced learning dynamics
+* Dropout-like regularization
+* Improved stability over random freezing or L1 regularization
 
 ---
 
 ## 📊 Results
 
-> **Note:** Below are structured placeholders so you can add results incrementally.
+> ⚠️ **Placeholders below are intentional** — you can add results incrementally without restructuring the README.
+
+---
 
 ### 🔢 Quantitative Results (Main)
 
-<!-- TODO: Add main results table comparing VectorFit with LoRA, AdaLoRA, SVFT, Full-FT -->
+<!-- TODO: Add main comparison table -->
 
-**Covered tasks:**
+**Expected comparison baselines**
 
-* GLUE (NLU)
-* SQuAD v1.1 / v2.0 (QA)
-* XSum, CNN/DailyMail (NLG)
-* GSM8K, MATH (Reasoning)
-* CIFAR10, GTSRB, MNIST, RESISC45 (Vision)
-* DreamBooth (Image Generation)
+* Full Fine-Tuning
+* LoRA
+* AdaLoRA
+* SVFT
+* BitFit
+
+**Metrics**
+
+* Accuracy / F1 (classification)
+* ROUGE / BLEU (generation)
+* Exact Match (QA)
+* Image classification accuracy
+* DreamBooth identity similarity
 
 ---
 
 ### 📈 Parameter Efficiency vs Performance
 
-<!-- TODO: Add plot: Accuracy / ROUGE / F1 vs % trainable parameters -->
+<!-- TODO: Add plot: performance vs % trainable parameters -->
 
-VectorFit consistently lies on the **Pareto frontier**, especially below **0.1% trainable parameters**.
+VectorFit consistently lies on the **Pareto frontier**, particularly below **0.1% trainable parameters**, where other PEFT methods degrade sharply.
 
 ---
 
 ### 🖼 Qualitative Results
 
-<!-- TODO: Add image grids for DreamBooth and Stable Diffusion -->
+<!-- TODO: Add qualitative figures -->
 
-Examples:
+Planned visualizations:
 
-* Subject-driven generation
+* Subject-driven image generation
+* Identity preservation vs LoRA
 * Prompt fidelity comparisons
-* Texture & identity preservation
-
-(See Figure 12 in the paper for reference)
+* Texture and detail retention
 
 ---
 
@@ -155,23 +171,24 @@ Examples:
 
 <!-- TODO: Add ablation tables -->
 
-Included ablations:
+Ablations include:
 
 * With vs without AVF
-* Singular vectors only vs singular + bias
+* Singular-only vs singular + bias
 * Attention-only vs full-block adaptation
-* Rank analysis of ΔW
+* Rank analysis of weight updates
 
 ---
 
 ## ⚙️ Experimental Setup
 
-* **Framework**: PyTorch + HuggingFace Transformers
+* **Framework**: PyTorch, HuggingFace Transformers
 * **Optimizer**: AdamW
+* **Precision**: FP16 / BF16
 * **Hardware**:
 
   * NVIDIA A100 (40GB)
-  * Titan XP (training speed analysis)
+  * Titan XP (efficiency analysis)
 
 ### Base Models
 
@@ -186,29 +203,31 @@ Included ablations:
 
 ## 🧠 Why VectorFit Works
 
-* Singular values encode **directional scaling** in high-dimensional space
-* Updating them enables **global transformations**, not just low-rank perturbations
-* Bias training adds **translational freedom**
-* AVF ensures **balanced learning dynamics**
+* Singular values encode **directional scaling** across representation subspaces
+* Updating them enables **global transformations**, not low-rank perturbations
+* Bias adaptation adds **translation flexibility**
+* AVF prevents vector dominance and improves convergence
 
-Together, these produce **high-rank updates** that closely track Full-FT behavior.
+Together, these yield **high-rank functional updates** comparable to full fine-tuning.
 
 ---
 
 ## ⚠️ Limitations
 
+* Requires one-time SVD preprocessing
 * AVF introduces additional hyperparameters
-* Upper bound on trainable parameters is fixed (no new matrices)
-* Future extensions may involve adapting **U** and **V** selectively
+* Upper bound on adaptation capacity is fixed by existing vectors
+* Future work may selectively adapt `U` and `V`
 
 ---
 
 ## 🚀 Applications
 
-* Low-budget fine-tuning of LLMs
+* Low-budget LLM fine-tuning
 * Multi-task adaptation without model duplication
-* On-device / edge deployment
-* Efficient DreamBooth-style personalization
+* Edge and on-device deployment
+* Efficient DreamBooth personalization
+* Continual learning scenarios
 
 ---
 
@@ -232,9 +251,7 @@ Together, these produce **high-rank updates** that closely track Full-FT behavio
 Planned:
 
 * HuggingFace PEFT integration
-* Training scripts
 * AVF scheduler implementation
-* Reproducibility configs
+* Training & evaluation scripts
 * DreamBooth examples
-
----
+* Reproducibility configs
