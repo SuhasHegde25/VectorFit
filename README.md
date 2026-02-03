@@ -1,5 +1,3 @@
----
-
 ## VectorFit
 
 **Adaptive Singular & Bias Vector Fine-Tuning of Pre-trained Foundation Models**
