@@ -83,7 +83,7 @@ This enables **global, high-rank transformations** while training a very small n
 
 ## 🏗 Architecture
 
-![VectorFit Architecture](assets/vectorfit_architecture.png)
+![VectorFit Architecture](https://github.com/SuhasHegde25/VectorFit/blob/main/vectorfit_parameterization.png)
 
 ### Pipeline
 
