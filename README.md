@@ -2,7 +2,7 @@
 
 **Adaptive Singular & Bias Vector Fine-Tuning of Pre-trained Foundation Models**
 
-📄 *Paper*: VectorFit
+📄 *Paper*: [VectorFit](https://arxiv.org/abs/2503.19530)
 🏫 *Affiliation*: IIT Indore
 🧠 *Category*: Parameter-Efficient Fine-Tuning (PEFT)
 🎯 *Domains*: Language, Vision, Multimodal, Image Generation
