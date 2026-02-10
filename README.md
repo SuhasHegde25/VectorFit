@@ -120,7 +120,8 @@ This results in:
 
 ## 📊 Results
 
-> ⚠️ **Placeholders below are intentional** — you can add results incrementally without restructuring the README.
+![graph](https://github.com/SuhasHegde25/VectorFit/blob/main/Graphs.png)
+Accuracy vs Trainable parameter count for SST2 dataset. VectorFit (labeled as VF for brevity) outperforms baselines with 85% less trainable parameters. The graph highlights that VectorFit is a PEFT method in extremely low parameter regime of <0.1% trainable parameters.
 
 ---
 
@@ -128,7 +129,7 @@ This results in:
 
 <!-- TODO: Add main comparison table -->
 
-**Expected comparison baselines**
+**Comparison baselines**
 
 * Full Fine-Tuning
 * LoRA
